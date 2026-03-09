@@ -31,10 +31,11 @@ const steps = [
     }
 ];
 
-export default function HowWeWork() {
+export default function HowWeWork({ isLoaded }) {
     const containerRef = useRef(null);
 
     useEffect(() => {
+        if (!isLoaded) return;
         let ctx = gsap.context(() => {
             const cards = gsap.utils.toArray('.process-card');
 
@@ -65,10 +66,31 @@ export default function HowWeWork() {
                         }
                     });
                 }
+
+                // Animate content INSIDE the card when it arrives
+                const contentElements = card.querySelectorAll('.process-content-item');
+                if (contentElements.length > 0) {
+                    gsap.fromTo(contentElements,
+                        { y: 50, opacity: 0, filter: "blur(5px)" },
+                        {
+                            y: 0,
+                            opacity: 1,
+                            filter: "blur(0px)",
+                            duration: 0.8,
+                            stagger: 0.1,
+                            ease: 'power3.out',
+                            scrollTrigger: {
+                                trigger: card,
+                                start: 'top 60%', // Trigger when the card itself is about 60% down the screen
+                                toggleActions: "play none none reverse" // Play on enter, reverse on leave back
+                            }
+                        }
+                    );
+                }
             });
         }, containerRef);
         return () => ctx.revert();
-    }, []);
+    }, [isLoaded]);
 
     return (
         <section id="process" ref={containerRef} className="relative w-full bg-background border-t border-white/5 py-40">
@@ -80,28 +102,28 @@ export default function HowWeWork() {
                     <div className="w-full max-w-7xl relative flex flex-col lg:flex-row px-8 md:px-16 gap-12 lg:gap-24 items-center">
 
                         {/* Huge Editorial Number */}
-                        <div className="absolute top-0 left-0 lg:-left-12 -translate-y-1/2 text-[150px] md:text-[300px] font-heading font-black text-transparent [-webkit-text-stroke:2px_rgba(250,250,250,0.05)] select-none pointer-events-none origin-bottom-left z-0">
+                        <div className="absolute top-0 left-0 lg:-left-12 -translate-y-1/2 text-[100px] md:text-[200px] font-heading font-black text-transparent [-webkit-text-stroke:2px_rgba(250,250,250,0.05)] select-none pointer-events-none origin-bottom-left z-0">
                             {step.num}
                         </div>
 
                         {/* Left Content Area (Text) */}
                         <div className="flex-1 flex flex-col justify-center relative z-10 w-full">
-                            <div className="flex items-center gap-6 mb-8 md:mb-12">
+                            <div className="process-content-item flex items-center gap-6 mb-8 md:mb-12">
                                 <div className="h-[2px] w-12 bg-accent"></div>
                                 <div className="font-mono text-xs uppercase tracking-[0.2em] font-bold text-accent">
                                     [ Phase {step.num} ]
                                 </div>
                             </div>
 
-                            <h3 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-6 leading-[1.1] max-w-2xl text-primary">
+                            <h3 className="process-content-item text-3xl md:text-5xl lg:text-6xl font-heading font-black mb-6 leading-[1.1] max-w-2xl text-primary">
                                 {step.title}
                             </h3>
 
-                            <p className="font-body text-xl md:text-2xl text-primary/60 max-w-xl mb-12 leading-relaxed font-light">
+                            <p className="process-content-item font-body text-xl md:text-2xl text-primary/60 max-w-xl mb-12 leading-relaxed font-light">
                                 {step.description}
                             </p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 font-mono text-sm border-t border-white/10 pt-8 mt-auto">
+                            <div className="process-content-item grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 font-mono text-sm border-t border-white/10 pt-8 mt-auto">
                                 <div className="col-span-1 md:col-span-2 text-primary/40 uppercase tracking-widest text-xs mb-2">Deliverables</div>
                                 {step.deliverables.map((d, i) => (
                                     <div key={i} className="flex items-center gap-4 text-primary font-bold">
@@ -114,12 +136,13 @@ export default function HowWeWork() {
                         {/* Right Area (Timeline & Abstract Visuals) */}
                         <div className="lg:w-[400px] w-full flex flex-col justify-between h-full relative z-10">
 
-                            <div className="bg-[#0A0A0A] border border-white/10 rounded-2xl p-8 flex flex-col gap-2">
-                                <div className="text-primary/40 font-mono text-xs uppercase tracking-widest">Est. Timeline</div>
-                                <div className="text-3xl font-heading font-black text-primary">{step.duration}</div>
+                            <div className="process-content-item bg-[#0A0A0A] border border-[#D4AF37]/50 rounded-2xl p-8 flex flex-col gap-2 relative overflow-hidden group hover:border-[#D4AF37] transition-colors duration-500 shadow-[0_0_15px_rgba(212,175,55,0.05)]">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                                <div className="text-[#D4AF37]/70 font-mono text-xs uppercase tracking-widest relative z-10">Est. Timeline</div>
+                                <div className="text-3xl font-heading font-black text-primary relative z-10">{step.duration}</div>
                             </div>
 
-                            <div className="hidden lg:flex flex-1 mt-8 rounded-2xl border border-white/5 relative overflow-hidden items-center justify-center bg-gradient-to-b from-transparent to-white/[0.02]">
+                            <div className="process-content-item hidden lg:flex flex-1 mt-8 rounded-2xl border border-white/5 relative overflow-hidden items-center justify-center bg-gradient-to-b from-transparent to-white/[0.02]">
                                 {/* Simple abstract line animations */}
                                 {index === 0 && (
                                     <div className="w-[1px] h-full bg-gradient-to-b from-transparent via-accent to-transparent opacity-50 relative overflow-hidden">

@@ -1,129 +1,278 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCreative, Mousewheel, Keyboard } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/effect-creative';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const projects = [
+const baseProjects = [
     {
-        id: "nexus",
-        client: "Nexus Flow",
-        category: "Web Design",
-        year: 2024,
-        headline: "Accelerate data at the speed of light.",
-        thumbnail_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80",
-        tags: ["React", "GSAP"],
-        result_metric: "+420% user retention",
-        color_accent: "#7B61FF"
+        id: "easings",
+        title: "Easings",
+        badge: "EXPECTED EARLY 2026",
+        headline: "Coming soon, ready-to-paste easings for CSS and GSAP inside the Osmo Vault.",
+        thumbnail_url: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&q=80",
+        color_accent: "#EAEAEA", // Light Grey
+        text_color: "#050505"
     },
     {
-        id: "lumina",
-        client: "Lumina Deep",
-        category: "Motion",
-        year: 2024,
-        headline: "A new wavelength in digital audio.",
+        id: "community",
+        title: "Community",
+        badge: "PART OF THE MEMBERSHIP",
+        headline: "Connect with the people who love building great websites as much as you do.",
+        thumbnail_url: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80",
+        color_accent: "#6B46FF", // Purple
+        text_color: "#FFFFFF"
+    },
+    {
+        id: "vault",
+        title: "The Vault",
+        badge: "PART OF THE MEMBERSHIP",
+        headline: "Our ever-growing dashboard packed with ready-to-go components.",
+        thumbnail_url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80",
+        color_accent: "#111111", // Black
+        text_color: "#FFFFFF"
+    },
+    {
+        id: "transition",
+        title: "Page Transition",
+        badge: "PART OF THE ACADEMY",
+        headline: "Learn how to create page transitions that take your websites to the next level.",
         thumbnail_url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80",
-        tags: ["Identity", "Motion"],
-        result_metric: "Award Winning UX",
-        color_accent: "#00FFCC"
+        color_accent: "#BFFF00", // Neon lime
+        text_color: "#050505"
     },
     {
-        id: "aether",
-        client: "Aether Neon",
-        category: "Dev",
-        year: 2023,
-        headline: "Atmospheric flow control systems.",
-        thumbnail_url: "https://images.unsplash.com/photo-1542382103-f094ce02fbe8?auto=format&fit=crop&q=80",
-        tags: ["Full-stack", "Optimization"],
-        result_metric: "1.2s avg load time",
-        color_accent: "#FF4500"
+        id: "icons",
+        title: "Icons",
+        badge: "PART OF THE STUDIO",
+        headline: "A uniform library of clean, scalable SVG icons you can copy or download in seconds.",
+        thumbnail_url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80",
+        color_accent: "#FF4500", // Orange
+        text_color: "#FFFFFF"
     }
 ];
 
-export default function OurWork() {
+// Duplicate the core projects robustly to create a massive, infinite-feeling loop
+const projects = [
+    ...baseProjects,
+    ...baseProjects.map(p => ({ ...p, id: p.id + '-2' })),
+    ...baseProjects.map(p => ({ ...p, id: p.id + '-3' })),
+    ...baseProjects.map(p => ({ ...p, id: p.id + '-4' })),
+    ...baseProjects.map(p => ({ ...p, id: p.id + '-5' }))
+];
+
+export default function OurWork({ isLoaded }) {
     const sectionRef = useRef(null);
 
     useEffect(() => {
+        if (!isLoaded) return;
         const ctx = gsap.context(() => {
-            gsap.fromTo('.work-card',
-                { y: 80, opacity: 0 },
+            gsap.fromTo(sectionRef.current,
+                { opacity: 0, y: 100 },
                 {
-                    y: 0,
                     opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: 'power3.out',
+                    y: 0,
+                    duration: 1.5,
+                    ease: 'expo.out',
                     scrollTrigger: {
                         trigger: sectionRef.current,
-                        start: 'top 75%',
+                        start: 'top 70%',
                     }
                 }
             );
         }, sectionRef);
         return () => ctx.revert();
-    }, []);
+    }, [isLoaded]);
 
     return (
-        <section id="work" ref={sectionRef} className="py-32 px-6 md:px-16 w-full max-w-7xl mx-auto">
+        <section id="work" ref={sectionRef} className="py-24 md:py-32 w-full relative overflow-hidden bg-background">
+
+            {/* Straight Dotted Line SVG (Track) */}
+            <div className="absolute top-[50%] left-0 w-full h-[2px] pointer-events-none z-0 opacity-20 transform -translate-y-1/2">
+                <svg width="100%" height="2" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="0" y1="1" x2="100%" y2="1" stroke="currentColor" strokeWidth="2" strokeDasharray="8 12" />
+                </svg>
+            </div>
 
             {/* Section Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+            <div className="px-6 md:px-16 w-full max-w-7xl mx-auto mb-16 relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div className="max-w-2xl">
-                    <div className="font-mono text-accent uppercase tracking-[0.3em] text-sm mb-6">Selected Work</div>
-                    <h2 className="text-5xl md:text-7xl font-heading font-bold leading-none tracking-tight">
+                    <div className="font-mono text-accent uppercase tracking-[0.3em] text-sm mb-6">03 // Selected Work</div>
+                    <h2 className="text-4xl md:text-6xl font-heading font-black leading-none tracking-tight text-white mb-2">
                         Projects that <br />
                         <span className="font-drama italic text-accent font-normal tracking-wide">move numbers.</span>
                     </h2>
                 </div>
-                <button className="text-accent flex items-center gap-2 hover:gap-4 transition-all pb-2 border-b border-accent font-heading font-medium">
-                    View all work &rarr;
-                </button>
             </div>
 
-            {/* Full-Width Row Layout */}
-            <div className="flex flex-col border-t border-white/10 mt-12 w-full gap-0">
-                {projects.map((project, idx) => (
-                    <div
-                        key={project.id}
-                        className="work-card group relative w-full border-b border-white/10 py-12 md:py-20 flex flex-col md:flex-row items-center justify-between cursor-pointer overflow-hidden px-6 md:px-12 hover:bg-white/[0.02] transition-colors duration-500"
-                    >
-                        {/* Hover Background Image Reveal */}
-                        <div className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none overflow-hidden">
-                            <div className="absolute inset-0 bg-background/80 z-10" />
-                            <img
-                                src={project.thumbnail_url}
-                                alt={project.client}
-                                className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] opacity-40 grayscale group-hover:grayscale-0"
-                            />
-                        </div>
+            {/* Swiper Slider */}
+            <div className="w-full relative z-10 custom-swiper-container pb-20">
+                <style>{`
+                    .custom-swiper-container {
+                        width: 100%;
+                        max-width: 1400px;
+                        padding-top: 50px;
+                        padding-bottom: 50px;
+                        overflow: visible; /* Allows side cards to bleed perfectly off screen */
+                    }
+                    .custom-swiper-container .swiper {
+                        width: 100%;
+                        padding-top: 50px;
+                        padding-bottom: 50px;
+                        overflow: visible;
+                    }
+                    .custom-swiper-container .swiper-slide {
+                        width: 480px !important;
+                        height: 650px !important;
+                        opacity: 0; /* Base state is invisible, EffectCreative manages the 3 visible ones */
+                        transition: opacity 0.5s;
+                    }
+                    .custom-swiper-container .swiper-slide-active {
+                        opacity: 1;
+                    }
+                    /* Base Inactive Card Styling */
+                    .custom-swiper-container .swiper-slide .card-inner {
+                        background-color: var(--card-color, #0F0F0F); 
+                        color: var(--text-color, #FFFFFF);
+                        transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+                        border-radius: 2rem;
+                    }
 
-                        {/* Content */}
-                        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-8">
+                    /* Text adjustments using CSS variables passed via inline styles */
+                    .custom-swiper-container .swiper-slide .card-inner .badge {
+                        background: rgba(128,128,128,0.15);
+                        border: 1px solid rgba(128,128,128,0.3);
+                        color: var(--text-color, #000);
+                        opacity: 0.9;
+                    }
+                    .custom-swiper-container .swiper-slide .card-inner .project-title {
+                        color: var(--text-color, #000);
+                    }
+                    .custom-swiper-container .swiper-slide .card-inner .project-headline {
+                        color: var(--text-color, #000);
+                        opacity: 0.8;
+                    }
+                    .custom-swiper-container .swiper-slide .card-inner .star-icon {
+                        color: var(--text-color, #000);
+                    }
 
-                            <div className="flex flex-col max-w-2xl translate-x-0 group-hover:translate-x-4 transition-transform duration-500">
-                                <div className="font-mono text-accent text-sm md:text-base font-bold tracking-[0.2em] uppercase mb-4 opacity-80 group-hover:opacity-100 transition-opacity">
-                                    0{idx + 1} // {project.category}
+                    /* Interactive Drag Circular Button on Hover */
+                    .custom-swiper-container .swiper-slide .drag-hint {
+                        opacity: 0;
+                        transform: scale(0.5);
+                    }
+                    .custom-swiper-container .swiper-slide:hover .drag-hint {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .custom-swiper-container .swiper-slide {
+                            width: 300px !important;
+                            height: 480px !important;
+                        }
+                    }
+                    
+                    /* Custom drag cursor area and buttery smooth spring easing for the whole track */
+                    .swiper-wrapper {
+                        cursor: grab;
+                        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+                    }
+                    .swiper-wrapper:active {
+                        cursor: grabbing;
+                    }
+                `}</style>
+                <Swiper
+                    effect={'creative'}
+                    grabCursor={true}
+                    centeredSlides={true}
+                    slidesPerView={'auto'}
+                    initialSlide={1}
+                    loop={true}
+                    speed={1200} /* Slower animation speed makes the easing curve feel much smoother */
+                    resistanceRatio={0.5} /* Bouncier edges */
+                    touchRatio={2} /* Reacts twice as fast to finger/mouse drag */
+                    longSwipesRatio={0.1} /* Very little distance needed to trigger a swipe */
+                    mousewheel={{
+                        forceToAxis: true,
+                        sensitivity: 1,
+                    }}
+                    keyboard={true}
+                    loopedSlides={10} /* Keep large buffer for infinite effect */
+                    creativeEffect={{
+                        limitProgress: 2, // Strictly limit visibility scope
+                        prev: {
+                            shadow: true,
+                            translate: ['-160%', '2%', -400], // Increased X gap from 115% to 160%
+                            rotate: [0, 25, -3],
+                        },
+                        next: {
+                            shadow: true,
+                            translate: ['160%', '2%', -400], // Increased X gap from 115% to 160%
+                            rotate: [0, -25, 3],
+                        },
+                        active: {
+                            translate: [0, 0, 0],
+                            rotate: [0, 0, 0],
+                            scale: 1,
+                        }
+                    }}
+                    modules={[EffectCreative, Mousewheel, Keyboard]}
+                    className="w-full"
+                >
+                    {projects.map((project, idx) => (
+                        <SwiperSlide key={`${project.id}-${idx}`} style={{ '--card-color': project.color_accent, '--text-color': project.text_color }}>
+                            <div className="card-inner w-full h-full flex flex-col justify-start items-center relative overflow-hidden p-8 px-10">
+
+                                {/* Top Badge */}
+                                <div className="badge font-mono text-[10px] md:text-[11px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mt-2 transition-colors duration-500">
+                                    {project.badge}
                                 </div>
-                                <h3 className="text-5xl md:text-7xl lg:text-[90px] font-heading font-black tracking-tighter leading-[0.9] text-primary group-hover:text-white transition-colors">
-                                    {project.client}
-                                </h3>
-                                <div className="mt-6 font-drama text-2xl md:text-4xl text-primary/60 italic font-light group-hover:text-primary/90 transition-colors">
-                                    {project.headline}
+
+                                {/* Large Asterisk Star */}
+                                <div className="star-icon mt-16 mb-6 transition-colors duration-500 flex justify-center items-center">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 2v20M17 5l-10 14M22 12H2M19 19 5 5" />
+                                    </svg>
                                 </div>
+
+                                {/* Text Content */}
+                                <div className="w-full text-center flex flex-col items-center flex-1">
+                                    <h3 className="project-title text-[40px] md:text-[50px] font-heading font-medium tracking-tight leading-[1.1] mb-6 transition-colors duration-500">
+                                        {project.title}
+                                    </h3>
+                                    <p className="project-headline font-mono text-sm md:text-base max-w-[90%] mx-auto leading-relaxed transition-colors duration-500">
+                                        {project.headline}
+                                    </p>
+                                </div>
+
+                                {/* Centered Drag Hint (Only visible on active card) */}
+                                <div className="drag-hint absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#1A1A1A] text-white rounded-full flex items-center justify-center font-mono text-[10px] uppercase font-bold tracking-widest pointer-events-none z-20 shadow-2xl transition-all duration-500 ease-out">
+                                    Drag
+                                </div>
+
+                                {/* Bottom Interactive Box */}
+                                <div className="w-full h-40 md:h-[180px] bg-black rounded-2xl overflow-hidden relative shadow-2xl group mt-auto border border-white/5">
+                                    <img
+                                        src={project.thumbnail_url}
+                                        className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                                        alt={project.title}
+                                    />
+                                    {/* Action button overlay */}
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-black font-mono text-[10px] uppercase tracking-widest px-6 py-2 rounded-sm font-bold shadow-lg opacity-0 translate-y-2 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                        Discover
+                                    </div>
+                                </div>
+
                             </div>
-
-                            <div className="flex flex-col items-start md:items-end gap-6 md:text-right translate-x-0 group-hover:-translate-x-4 transition-transform duration-500">
-                                <div className="font-mono text-lg text-primary/80 border text-center border-white/20 rounded-full px-6 py-2 group-hover:border-accent group-hover:bg-accent group-hover:text-background transition-all duration-300 font-bold tracking-widest uppercase">
-                                    {project.result_metric}
-                                </div>
-                                <div className="text-primary/40 font-mono text-sm uppercase tracking-widest hidden md:block">
-                                    {project.year} &copy;
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                ))}
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
             </div>
         </section>
     );
